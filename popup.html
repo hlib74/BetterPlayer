@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="pill-nav-container">
+        <nav class="pill-nav" aria-label="Primary">
+
+            <button class="pill is-active" id="tabTabs" aria-label="Tabs View">
+                <span class="hover-circle" aria-hidden="true"></span>
+                <span class="label-stack">
+                    <span class="pill-label">
+                        <span data-i18n="tabs">Tabs</span>
+                        <span id="tabsCounter1"></span>
+                    </span>
+                    <span class="pill-label-hover" aria-hidden="true">
+                        <span data-i18n="tabs">Tabs</span>
+                        <span id="tabsCounter2"></span>
+                    </span>
+                </span>
+            </button>
+            <button class="pill" id="tabSound" aria-label="Tab Controls View">
+                <span class="hover-circle" aria-hidden="true"></span>
+                <span class="label-stack">
+                    <span class="pill-label" data-i18n="tabControls">Tab Controls</span>
+                    <span class="pill-label-hover" aria-hidden="true" data-i18n="tabControls">Tab Controls</span>
+                </span>
+            <button class="pill" id="tabSettings" aria-label="Settings View">
+                <span class="hover-circle" aria-hidden="true"></span>
+                <span class="label-stack">
+                    <span class="pill-label" data-i18n="settings">Settings</span>
+                    <span class="pill-label-hover" aria-hidden="true" data-i18n="settings">Settings</span>
+                </span>
+            </button>
+        </nav>
+    </div>
+
+
+    <!-- Tabs List View -->
+    <div id="tabsView" class="view active">
+        <div class="new-tab-container" style="padding: 10px 15px 0 15px; flex-shrink: 0; z-index: 10;">
+            <div id="newTabBtnWrapper" class="animated-item" data-index="0" data-tab-id="new"
+                style="margin-bottom: 0; animation: none; transform: none; opacity: 1;">
+                <div class="item new-tab-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                        viewBox="0 0 16 16" style="margin-right:8px; flex-shrink: 0;">
+                        <path fill-rule="evenodd"
+                            d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
+                    </svg>
+                    <span id="newTabBtnText" style="font-weight:bold; font-size:13px;" data-i18n="newTab">New Tab</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-tools-bar" style="padding: 10px 15px 0 15px; display: flex; gap: 8px;">
+            <input type="text" id="tabSearchInput" placeholder="Search tabs..." class="settings-select" style="margin-top: 0; flex-grow: 1; padding: 4px 8px;">
+            <select id="tabSortSelect" class="settings-select" style="display: none; margin-top: 0; width: 100px; flex-shrink: 0; padding: 4px;">
+                <option value="domain" data-i18n="sortDomain">Domain</option>
+                <option value="default" data-i18n="sortDefault">Default</option>
+                <option value="alpha" data-i18n="sortAlpha">A-Z</option>
+            </select>
+        </div>
+
+        <div class="scroll-list-container">
+            <div class="top-gradient" id="topGradient"></div>
+            <div class="scroll-list no-scrollbar" id="tabList">
+            </div>
+            <div class="bottom-gradient" id="bottomGradient"></div>
+        </div>
+    </div>
+
+    <!-- Sound Control View -->
+    <div id="soundView" class="view">
+        <div id="targetTabTitle" class="tab-title-container" style="flex-shrink: 0; z-index: 20;">
+            <span class="tab-title-label" data-i18n="controllingTab">Controlling:</span>
+            <span id="targetTabTitleText" class="tab-title-text">Current Tab</span>
+        </div>
+        <div id="captureWarningBanner" style="display: none; background: rgba(239, 83, 80, 0.12); color: #f44336; padding: 10px 15px; font-size: 12px; font-weight: 500; border-bottom: 1px solid rgba(239, 83, 80, 0.25); align-items: center; gap: 8px; flex-shrink: 0; z-index: 19; line-height: 1.4;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="flex-shrink: 0;">
+                <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+                <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+            </svg>
+            <span id="captureWarningText" data-i18n="captureWarning">Audio capture is not supported on browser/internal pages. Please use an HTTP/HTTPS webpage.</span>
+        </div>
+        <div class="scroll-list-container">
+            <div class="top-gradient" id="soundTopGradient"></div>
+            <div class="scroll-list no-scrollbar" id="soundScrollList" style="padding-top: 10px; padding-bottom: 20px;">
+                <div class="control-group custom-select-group" style="margin-top: 5px;">
+                    <div class="header-row" style="margin-bottom: 0;">
+                        <label data-i18n="targetTab">Target Tab</label>
+                    </div>
+                    <div id="targetTabCustomSelect" class="custom-select-container">
+                        <div class="custom-select-header" id="targetTabSelectHeader">
+                            <span id="targetTabSelectLabel" data-i18n="currentTab">Current Tab</span>
+                            <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                        </div>
+                        <div class="custom-select-dropdown" id="targetTabDropdown" style="display: none;">
+                            <div class="scroll-list-container dropdown-scroll-container">
+                                <div class="top-gradient dropdown-top-gradient"></div>
+                                <div class="scroll-list no-scrollbar" id="targetTabDropdownList">
+                                    <!--js items-->
+                                </div>
+                                <div class="bottom-gradient dropdown-bottom-gradient"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="header-row">
+                        <label for="volumeSlider" data-i18n="volume">Volume</label>
+                        <span class="value-display" id="volumeValue">100%</span>
+                    </div>
+                    <div id="volumeSliderContainer" class="elastic-slider-container"></div>
+                </div>
+
+                <div class="control-group" style="margin-top: 20px;">
+                    <div class="header-row">
+                        <label for="speedSlider" data-i18n="playbackSpeed">Playback Speed</label>
+                        <span class="value-display" id="speedValue">1.0x</span>
+                    </div>
+                    <div id="speedSliderContainer" class="elastic-slider-container"></div>
+                </div>
+
+                <div class="control-group eq-group" style="margin-top: 20px;">
+                    <div class="header-row">
+                        <label data-i18n="equalizer">Equalizer</label>
+                    </div>
+                    <div class="eq-preset-bar" style="display: flex; gap: 8px;">
+                        <select id="eqPresetSelect" class="eq-preset-select" style="display: none; flex-grow: 1;">
+                            <option value="flat" data-i18n="eqFlat">Flat</option>
+                            <option value="rock" data-i18n="eqRock">Rock</option>
+                            <option value="pop" data-i18n="eqPop">Pop</option>
+                            <option value="bassBoost" data-i18n="eqBassBoost">Bass Boost</option>
+                            <option value="trebleBoost" data-i18n="eqTrebleBoost">Treble Boost</option>
+                            <option value="acoustic" data-i18n="eqAcoustic">Acoustic</option>
+                            <option value="classical" data-i18n="eqClassical">Classical</option>
+                            <option value="electronic" data-i18n="eqElectronic">Electronic</option>
+                            <option value="hiphop" data-i18n="eqHipHop">Hip-Hop</option>
+                            <option value="vocalBoost" data-i18n="eqVocalBoost">Vocal Boost</option>
+                            <option value="custom" data-i18n="eqCustom">Custom</option>
+                        </select>
+                        <button id="saveEqBtn" class="eq-reset" style="margin-top: 0; display: none;" data-i18n="eqSave">Save</button>
+                        <button id="deleteEqBtn" class="eq-reset delete-btn" style="margin-top: 0; display: none;" data-i18n="eqDelete">Delete</button>
+                    </div>
+                    <div class="eq-bands-container">
+                        <!-- 32Hz -->
+                        <div class="eq-band">
+                            <span class="eq-value" id="eqVal-0">0dB</span>
+                            <div id="eqSliderContainer-0" class="elastic-slider-vertical-container"></div>
+                            <span class="eq-label">32</span>
+                        </div>
+                        <!-- 64Hz -->
+                        <div class="eq-band">
+                            <span class="eq-value" id="eqVal-1">0dB</span>
+                            <div id="eqSliderContainer-1" class="elastic-slider-vertical-container"></div>
+                            <span class="eq-label">64</span>
+                        </div>
+                        <!-- 125Hz -->
+                        <div class="eq-band">
+                            <span class="eq-value" id="eqVal-2">0dB</span>
+                            <div id="eqSliderContainer-2" class="elastic-slider-vertical-container"></div>
+                            <span class="eq-label">125</span>
+                        </div>
+                        <!-- 250Hz -->
+                        <div class="eq-band">
+                            <span class="eq-value" id="eqVal-3">0dB</span>
+                            <div id="eqSliderContainer-3" class="elastic-slider-vertical-container"></div>
+                            <span class="eq-label">250</span>
+                        </div>
+                        <!-- 500Hz -->
+                        <div class="eq-band">
+                            <span class="eq-value" id="eqVal-4">0dB</span>
+                            <div id="eqSliderContainer-4" class="elastic-slider-vertical-container"></div>
+                            <span class="eq-label">500</span>
+                        </div>
+                        <!-- 1kHz -->
+                        <div class="eq-band">
+                            <span class="eq-value" id="eqVal-5">0dB</span>
+                            <div id="eqSliderContainer-5" class="elastic-slider-vertical-container"></div>
+                            <span class="eq-label">1k</span>
+                        </div>
+                        <!-- 2kHz -->
+                        <div class="eq-band">
+                            <span class="eq-value" id="eqVal-6">0dB</span>
+                            <div id="eqSliderContainer-6" class="elastic-slider-vertical-container"></div>
+                            <span class="eq-label">2k</span>
+                        </div>
+                        <!-- 4kHz -->
+                        <div class="eq-band">
+                            <span class="eq-value" id="eqVal-7">0dB</span>
+                            <div id="eqSliderContainer-7" class="elastic-slider-vertical-container"></div>
+                            <span class="eq-label">4k</span>
+                        </div>
+                        <!-- 8kHz -->
+                        <div class="eq-band">
+                            <span class="eq-value" id="eqVal-8">0dB</span>
+                            <div id="eqSliderContainer-8" class="elastic-slider-vertical-container"></div>
+                            <span class="eq-label">8k</span>
+                        </div>
+                        <!-- 16kHz -->
+                        <div class="eq-band">
+                            <span class="eq-value" id="eqVal-9">0dB</span>
+                            <div id="eqSliderContainer-9" class="elastic-slider-vertical-container"></div>
+                            <span class="eq-label">16k</span>
+                        </div>
+                    </div>
+                    
+                    <div class="switch-label-row" style="margin-top: 15px;">
+                        <label data-i18n="monoAudio">Force Mono Audio</label>
+                        <label class="switch">
+                            <input type="checkbox" id="monoAudioToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="switch-label-row">
+                        <label data-i18n="spatialAudio">Spatial Audio (3D Room)</label>
+                        <label class="switch">
+                            <input type="checkbox" id="spatialAudioToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <button id="eqResetBtn" class="eq-reset" data-i18n="eqReset">Reset</button>
+                </div>
+
+                <div class="control-group filter-group" style="margin-top: 20px;">
+                    <div class="header-row">
+                        <label data-i18n="pageFilters">Page Filters</label>
+                    </div>
+                    <div class="filter-slider-group">
+                        <div class="filter-slider-row">
+                            <div class="header-row">
+                                <label data-i18n="brightness">Brightness</label>
+                                <span class="value-display" id="brightnessValue">100%</span>
+                            </div>
+                            <div id="brightnessSliderContainer" class="elastic-slider-container"></div>
+                        </div>
+                        <div class="filter-slider-row">
+                            <div class="header-row">
+                                <label data-i18n="contrast">Contrast</label>
+                                <span class="value-display" id="contrastValue">100%</span>
+                            </div>
+                            <div id="contrastSliderContainer" class="elastic-slider-container"></div>
+                        </div>
+                        <div class="filter-slider-row">
+                            <div class="header-row">
+                                <label data-i18n="saturation">Saturation</label>
+                                <span class="value-display" id="saturationValue">100%</span>
+                            </div>
+                            <div id="saturationSliderContainer" class="elastic-slider-container"></div>
+                        </div>
+                        <div class="filter-slider-row">
+                            <div class="header-row">
+                                <label data-i18n="sepia">Sepia</label>
+                                <span class="value-display" id="sepiaValue">0%</span>
+                            </div>
+                            <div id="sepiaSliderContainer" class="elastic-slider-container"></div>
+                        </div>
+                        <div class="filter-slider-row">
+                            <div class="header-row">
+                                <label data-i18n="grayscale">Grayscale</label>
+                                <span class="value-display" id="grayscaleValue">0%</span>
+                            </div>
+                            <div id="grayscaleSliderContainer" class="elastic-slider-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="switch-label-row">
+                        <label data-i18n="invertColors">Invert Colors</label>
+                        <label class="switch">
+                            <input type="checkbox" id="invertToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="switch-label-row">
+                        <label data-i18n="blueLight">Blue Light Filter</label>
+                        <label class="switch">
+                            <input type="checkbox" id="blueLightToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="switch-label-row">
+                        <label data-i18n="focusMask">Focus / Privacy Mask</label>
+                        <label class="switch">
+                            <input type="checkbox" id="focusMaskToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+
+                    <button id="filterResetBtn" class="eq-reset" data-i18n="filterReset">Reset</button>
+                </div>
+            </div>
+            <div class="bottom-gradient" id="soundBottomGradient"></div>
+        </div>
+    </div>
+
+    <!-- Settings View -->
+    <div id="settingsView" class="view">
+        <div class="scroll-list-container">
+            <div class="scroll-list no-scrollbar" id="settingsScrollList"
+                style="padding-top: 10px; padding-bottom: 20px;">
+                <div class="control-group">
+                    <div class="header-row">
+                        <label for="themeSelect" data-i18n="theme">Theme</label>
+                    </div>
+                    <select id="themeSelect" class="settings-select" style="display: none;">
+                        <option value="system" data-i18n="themeSystem">System default</option>
+                        <option value="dark" data-i18n="themeDark">Dark</option>
+                        <option value="light" data-i18n="themeLight">Light</option>
+                        <option value="blueEclipse" data-i18n="themeBlueEclipse">Blue Eclipse</option>
+                        <option value="greenJuice" data-i18n="themeGreenJuice">Green Juice</option>
+                        <option value="chiliSpice" data-i18n="themeChiliSpice">Chili Spice</option>
+                        <option value="bloomingRomance" data-i18n="themeBloomingRomance">Blooming Romance</option>
+                        <option value="californiaBeaches" data-i18n="themeCaliforniaBeaches">California Beaches</option>
+                    </select>
+                </div>
+                <div class="control-group custom-select-group">
+                    <div class="header-row">
+                        <label for="langSelect" data-i18n="language">Language</label>
+                    </div>
+                    <select id="langSelect" style="display: none;">
+                        <option value="en">English</option>
+                        <option value="uk">Українська</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="pt">Português</option>
+                        <option value="it">Italiano</option>
+                        <option value="pl">Polski</option>
+                    </select>
+                    <div id="langCustomSelect" class="custom-select-container">
+                        <div class="custom-select-header" id="langSelectHeader">
+                            <span id="langSelectLabel" style="display: flex; align-items: center;">
+                            </span>
+                            <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                        </div>
+                        <div class="custom-select-dropdown" id="langDropdown" style="display: none;">
+                            <div class="scroll-list-container dropdown-scroll-container">
+                                <div class="scroll-list no-scrollbar" id="langDropdownList">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="header-row" style="margin-bottom: 0;">
+                        <label for="autoSuspendSelect" data-i18n="autoSuspend">Auto-Suspend Inactive Tabs</label>
+                    </div>
+                    <div class="eq-preset-bar" style="display: flex; gap: 8px; margin-top: 10px;">
+                        <select id="autoSuspendSelect" class="settings-select" style="display: none; flex-grow: 1;">
+                            <option value="0" data-i18n="suspendOff">Off</option>
+                            <option value="5" data-i18n="suspend5m">5 Minutes</option>
+                            <option value="15" data-i18n="suspend15m">15 Minutes</option>
+                            <option value="30" data-i18n="suspend30m">30 Minutes</option>
+                            <option value="60" data-i18n="suspend1h">1 Hour</option>
+                            <option value="custom_input" data-i18n="suspendCustom">Custom...</option>
+                        </select>
+                        <button id="saveSuspendBtn" class="eq-reset" style="margin-top: 0; display: none;" data-i18n="suspendSave">Save</button>
+                        <button id="deleteSuspendBtn" class="eq-reset delete-btn" style="margin-top: 0; display: none;" data-i18n="suspendDelete">Delete</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="header-row">
+                        <label data-i18n="sessionManagement">Session Management</label>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button id="exportSessionBtn" class="eq-reset" style="margin-top: 0; flex: 1;" data-i18n="exportSession">Export Session</button>
+                        <button id="importSessionBtn" class="eq-reset" style="margin-top: 0; flex: 1;" data-i18n="importSession">Import Session</button>
+                        <input type="file" id="importSessionFile" accept=".json" style="display: none;">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="customModal" class="modal-overlay" style="display: none;" aria-modal="true" role="dialog">
+        <div class="modal-box">
+            <p id="modalMessage" class="modal-message"></p>
+            <input id="modalInput" type="number" min="1" class="modal-input" placeholder="e.g. 45" style="display: none;">
+            <div class="modal-actions">
+                <button id="modalCancelBtn" class="modal-btn modal-btn-cancel">Cancel</button>
+                <button id="modalConfirmBtn" class="modal-btn modal-btn-confirm">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
